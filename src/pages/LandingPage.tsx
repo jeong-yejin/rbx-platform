@@ -11,10 +11,23 @@ const fmtVol = (n: number) => n >= 1_000_000 ? `$${(n / 1_000_000).toFixed(1)}M`
 
 const VISIBLE_EXCHANGES = EXCHANGES.filter(e => !e.comingSoon && !e.noFee).slice(0, 5);
 
+
 const HOW_STEPS = [
-  { title: 'Connect your exchange', desc: 'Sign up through ReboundX, complete KYC, link your UID.', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.6"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg> },
-  { title: 'Trade on the exchange', desc: 'Place trades like you normally would. We track your fees.', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 17l5-5 4 4 9-9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/><path d="M16 7h5v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg> },
-  { title: 'Receive in your wallet', desc: 'Rebates are sent to your wallet on every settlement day.', icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.6"/><path d="M3 10h18M16 15h2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg> },
+  {
+    num: '01',
+    title: 'Connect your exchange',
+    desc: 'Sign up via ReboundX, complete KYC, and link your exchange UID — takes under two minutes.',
+  },
+  {
+    num: '02',
+    title: 'Trade as you normally do',
+    desc: 'Keep using your favorite exchange. We track every fee under your linked UID, automatically.',
+  },
+  {
+    num: '03',
+    title: 'Receive in your wallet',
+    desc: 'Rebates settle weekly and arrive in the wallet you specify — fully verifiable on-chain.',
+  },
 ];
 
 const FAQ_ITEMS = [
@@ -37,11 +50,13 @@ function Hero({ onEnterPlatform }: { onEnterPlatform: () => void }) {
           in trading fees
         </h1>
         <p className="ln-hero-sub">
-          Trade on your favorite exchanges.<br />
-          Receive rebates straight to your wallet.
+          Trade on your favorite exchanges<br />
+          Receive rebates straight to your wallet
         </p>
         <div className="ln-hero-actions">
-          <button type="button" className="ln-btn-primary" onClick={onEnterPlatform}>Start Earning</button>
+          <button type="button" className="ln-btn-primary" onClick={onEnterPlatform}>
+            Start Earning
+          </button>
           <a href="#how" className="ln-btn-ghost"
              onClick={(e) => { e.preventDefault(); document.querySelector('#how')?.scrollIntoView({ behavior: 'smooth' }); }}>
             See how it works
@@ -65,7 +80,7 @@ function RebateSection({ onEnterPlatform }: { onEnterPlatform: () => void }) {
       <div className="ln-container">
         <div className="ln-section-head ln-section-head--center">
           <div className="ln-section-label">Fee Rebate Calculator</div>
-          <h2 className="ln-section-title">Every trade costs a fee.<br /><span className="ln-accent">We send part of it back.</span></h2>
+          <h2 className="ln-section-title">Every trade costs a fee<br /><span className="ln-accent">We send part of it back</span></h2>
         </div>
 
         {/* Flow diagram — live numbers from selected exchange */}
@@ -160,24 +175,124 @@ function RebateSection({ onEnterPlatform }: { onEnterPlatform: () => void }) {
 }
 
 /* ── Section 3: How it works ── */
+function StepMockup({ index }: { index: number }) {
+  if (index === 0) {
+    return (
+      <svg viewBox="0 0 480 360" className="ln-how-mockup-svg" aria-hidden="true">
+        <rect x="20" y="20" width="440" height="320" rx="14" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" />
+        <circle cx="40" cy="40" r="4" fill="rgba(255,255,255,0.18)" />
+        <circle cx="54" cy="40" r="4" fill="rgba(255,255,255,0.12)" />
+        <circle cx="68" cy="40" r="4" fill="rgba(255,255,255,0.08)" />
+        <text x="40" y="90" fill="rgba(255,255,255,0.55)" fontSize="11" fontFamily="JetBrains Mono, monospace">CONNECT EXCHANGE</text>
+        <rect x="40" y="108" width="200" height="44" rx="8" fill="rgba(202,255,93,0.08)" stroke="#CAFF5D" />
+        <text x="56" y="135" fill="#CAFF5D" fontSize="13" fontWeight="600">OKX</text>
+        <rect x="252" y="108" width="92" height="44" rx="8" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" />
+        <text x="268" y="135" fill="rgba(255,255,255,0.7)" fontSize="13">Bybit</text>
+        <text x="40" y="190" fill="rgba(255,255,255,0.55)" fontSize="11" fontFamily="JetBrains Mono, monospace">UID</text>
+        <rect x="40" y="200" width="400" height="44" rx="8" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" />
+        <text x="56" y="227" fill="rgba(255,255,255,0.85)" fontSize="13" fontFamily="JetBrains Mono, monospace">12048293</text>
+        <rect x="40" y="270" width="160" height="40" rx="8" fill="#CAFF5D" />
+        <text x="120" y="295" fill="#0A0A0A" fontSize="13" fontWeight="700" textAnchor="middle">Link Account</text>
+      </svg>
+    );
+  }
+  if (index === 1) {
+    const candles = [
+      [80, 60, 90, 30], [110, 50, 80, 40], [140, 70, 100, 35], [170, 40, 70, 30],
+      [200, 55, 85, 40], [230, 30, 60, 50], [260, 45, 95, 55], [290, 25, 70, 60],
+      [320, 40, 90, 65], [350, 35, 80, 70], [380, 20, 65, 80], [410, 30, 75, 90],
+    ];
+    return (
+      <svg viewBox="0 0 480 360" className="ln-how-mockup-svg" aria-hidden="true">
+        <rect x="20" y="20" width="440" height="320" rx="14" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" />
+        <text x="40" y="55" fill="rgba(255,255,255,0.85)" fontSize="13" fontWeight="600">BTC/USDT</text>
+        <text x="120" y="55" fill="#CAFF5D" fontSize="13" fontWeight="600">+2.45%</text>
+        <text x="40" y="75" fill="rgba(255,255,255,0.4)" fontSize="11" fontFamily="JetBrains Mono, monospace">$67,432.18</text>
+        {[100, 140, 180, 220, 260].map((y) => (
+          <line key={y} x1="40" y1={y} x2="440" y2={y} stroke="rgba(255,255,255,0.04)" />
+        ))}
+        {candles.map(([x, top, bot, body], i) => {
+          const isUp = i % 3 !== 0;
+          const color = isUp ? '#CAFF5D' : 'rgba(255,255,255,0.3)';
+          return (
+            <g key={x}>
+              <line x1={x} y1={100 + top} x2={x} y2={100 + top + bot} stroke={color} strokeWidth="1" />
+              <rect x={x - 5} y={100 + top + (bot - body) / 2} width="10" height={body} fill={color} />
+            </g>
+          );
+        })}
+        <rect x="40" y="290" width="120" height="32" rx="6" fill="rgba(202,255,93,0.12)" stroke="#CAFF5D" />
+        <text x="100" y="311" fill="#CAFF5D" fontSize="12" fontWeight="600" textAnchor="middle">Buy 0.5 BTC</text>
+        <rect x="170" y="290" width="90" height="32" rx="6" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" />
+        <text x="215" y="311" fill="rgba(255,255,255,0.6)" fontSize="12" textAnchor="middle">Sell</text>
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 480 360" className="ln-how-mockup-svg" aria-hidden="true">
+      <rect x="20" y="20" width="440" height="320" rx="14" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.08)" />
+      <text x="40" y="55" fill="rgba(255,255,255,0.55)" fontSize="11" fontFamily="JetBrains Mono, monospace">REBATE PAYOUT</text>
+      <text x="40" y="105" fill="#CAFF5D" fontSize="38" fontWeight="700" letterSpacing="-1">$1,284.50</text>
+      <text x="40" y="130" fill="rgba(255,255,255,0.4)" fontSize="11">Settled · May 6, 2026</text>
+      <rect x="40" y="160" width="400" height="56" rx="10" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" />
+      <circle cx="64" cy="188" r="14" fill="rgba(202,255,93,0.15)" />
+      <text x="64" y="193" fill="#CAFF5D" fontSize="13" fontWeight="700" textAnchor="middle">↓</text>
+      <text x="92" y="184" fill="rgba(255,255,255,0.85)" fontSize="13" fontWeight="600">Wallet 0x7a3f…b2c</text>
+      <text x="92" y="202" fill="rgba(255,255,255,0.4)" fontSize="11" fontFamily="JetBrains Mono, monospace">tx 0x9c1d…f04e</text>
+      <text x="420" y="195" fill="#CAFF5D" fontSize="13" fontWeight="600" textAnchor="end">+$1,284.50</text>
+      <rect x="40" y="232" width="400" height="56" rx="10" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" />
+      <circle cx="64" cy="260" r="14" fill="rgba(202,255,93,0.1)" />
+      <text x="64" y="265" fill="#CAFF5D" fontSize="13" fontWeight="700" textAnchor="middle">↓</text>
+      <text x="92" y="256" fill="rgba(255,255,255,0.7)" fontSize="13" fontWeight="600">Previous cycle</text>
+      <text x="92" y="274" fill="rgba(255,255,255,0.4)" fontSize="11" fontFamily="JetBrains Mono, monospace">Apr 29, 2026</text>
+      <text x="420" y="267" fill="rgba(255,255,255,0.7)" fontSize="13" fontWeight="600" textAnchor="end">+$972.18</text>
+    </svg>
+  );
+}
+
 function HowItWorks() {
+  const [active, setActive] = useState(0);
+
   return (
     <section id="how" className="ln-section">
       <div className="ln-container">
         <div className="ln-section-head ln-section-head--center">
-          <h2 className="ln-section-title">How it works</h2>
-          <p className="ln-section-sub">Three steps. No surprise.</p>
+          <h2 className="ln-section-title">Get started in just <span className="ln-accent">3 easy steps</span></h2>
+          <p className="ln-section-sub">A guided onboarding designed for speed and simplicity</p>
         </div>
 
-        <div className="ln-step-grid">
-          {HOW_STEPS.map((s, i) => (
-            <div key={s.title} className="ln-step-card">
-              {i > 0 && <div className="ln-step-arrow" aria-hidden="true">›</div>}
-              <div className="ln-step-icon">{s.icon}</div>
-              <div className="ln-step-title">{s.title}</div>
-              <div className="ln-step-desc">{s.desc}</div>
+        <div className="ln-how-grid">
+          <div className="ln-how-image-wrap">
+            <div className="ln-how-image-frame">
+              {HOW_STEPS.map((_, i) => (
+                <div key={i} className={`ln-how-mockup${active === i ? ' active' : ''}`}>
+                  <StepMockup index={i} />
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          <div className="ln-how-tabs" role="tablist">
+            {HOW_STEPS.map((s, i) => (
+              <button
+                key={s.title}
+                type="button"
+                role="tab"
+                aria-selected={active === i}
+                className={`ln-how-tab${active === i ? ' active' : ''}`}
+                onClick={() => setActive(i)}
+                onMouseEnter={() => setActive(i)}
+              >
+                <div className="ln-how-num-ring">
+                  <span className="ln-how-num">{s.num}</span>
+                </div>
+                <div className="ln-how-tab-text">
+                  <h4 className="ln-how-tab-title">{s.title}</h4>
+                  <p className="ln-how-tab-sub">{s.desc}</p>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -191,7 +306,7 @@ function PartnersSection() {
       <div className="ln-container">
         <div className="ln-section-head ln-section-head--center">
           <h2 className="ln-section-title">Partner exchanges</h2>
-          <p className="ln-section-sub">{VISIBLE_EXCHANGES.length} exchanges. Direct rebates.</p>
+          <p className="ln-section-sub"> Trade on 8 exchanges and receive rebates directly to your wallet</p>
         </div>
 
         <div className="ln-partner-list">
@@ -238,7 +353,7 @@ function VerifySection() {
       <div className="ln-container">
         <div className="ln-section-head ln-section-head--center">
           <h2 className="ln-section-title">Built to be verifiable</h2>
-          <p className="ln-section-sub">Every rebate, traceable to a transaction.</p>
+          <p className="ln-section-sub">Every rebate, traceable to a transaction</p>
         </div>
 
         <div className="ln-bento">
@@ -309,53 +424,43 @@ function VerifySection() {
 
             <div className="ln-bento-body">
               <h3 className="ln-bento-title">Track every payout in real time</h3>
-              <p className="ln-bento-desc">Weekly settlement history with per-trade breakdowns and on-chain transaction hashes.</p>
+              <p className="ln-bento-desc">Weekly settlement history with per-trade breakdowns and on-chain transaction hashes</p>
             </div>
           </div>
 
           {/* ─── Right column ─── */}
           <div className="ln-bento-right">
 
-            {/* Top: multi-exchange connector */}
+            {/* Top: multi-exchange orbit */}
             <div className="ln-bento-card">
-              <div className="ln-bento-connect-wrap">
-                <div className="ln-bento-node">
-                  <div className="ln-bento-node-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"
-                            stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/>
-                    </svg>
+              <div className="ln-bento-orbit-stage" aria-hidden="true">
+                <div className="ln-bento-orbit-center">
+                  <svg width="22" height="22" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 2L14 5.5v5L8 14L2 10.5v-5L8 2Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
+                    <path d="M8 5.5V10M5.5 7L8 5.5L10.5 7" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                {[
+                  { ring: 1, count: 2 },
+                  { ring: 2, count: 4 },
+                  { ring: 3, count: 3 },
+                ].map(({ ring, count }) => (
+                  <div key={ring} className={`ln-bento-orbit-ring ln-bento-orbit-ring--${ring}`}>
+                    {Array.from({ length: count }, (_, i) => {
+                      const rad = (i / count) * 2 * Math.PI;
+                      return (
+                        <span
+                          key={i}
+                          className="ln-bento-orbit-dot"
+                          style={{
+                            left: `${50 + 50 * Math.sin(rad)}%`,
+                            top:  `${50 - 50 * Math.cos(rad)}%`,
+                          }}
+                        />
+                      );
+                    })}
                   </div>
-                  <span className="ln-bento-node-label">OKX</span>
-                </div>
-                <div className="ln-bento-connector">
-                  <div className="ln-bento-conn-line" />
-                  <div className="ln-bento-conn-dot" />
-                </div>
-                <div className="ln-bento-node ln-bento-node--center">
-                  <div className="ln-bento-node-icon">
-                    <svg width="20" height="20" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M8 2L14 5.5v5L8 14L2 10.5v-5L8 2Z"
-                            stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>
-                      <path d="M8 5.5V10M5.5 7L8 5.5L10.5 7"
-                            stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-                    </svg>
-                  </div>
-                  <span className="ln-bento-node-label">RBX</span>
-                </div>
-                <div className="ln-bento-connector">
-                  <div className="ln-bento-conn-dot" />
-                  <div className="ln-bento-conn-line" />
-                </div>
-                <div className="ln-bento-node">
-                  <div className="ln-bento-node-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.6"/>
-                      <path d="M3 10h18M16 15h2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-                    </svg>
-                  </div>
-                  <span className="ln-bento-node-label">Bybit</span>
-                </div>
+                ))}
               </div>
               <div className="ln-bento-body">
                 <h3 className="ln-bento-title">Multiple exchanges</h3>
@@ -407,74 +512,32 @@ function VerifySection() {
 function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
   return (
-    <section className="ln-section">
-      <div className="ln-container">
-        <div className="ln-section-head ln-section-head--center">
-          <h2 className="ln-section-title">Common questions</h2>
-          <p className="ln-section-sub">Quick answers before you get started.</p>
-        </div>
+    <section className="ln-faq-section">
+      <div className="ln-section-head ln-section-head--center">
+        <h2 className="ln-section-title">Questions and Answers</h2>
+        <p className="ln-section-sub">Quick answers before you get started</p>
+      </div>
 
-        <div className="ln-faq">
-          {FAQ_ITEMS.map((item, i) => {
-            const isOpen = open === i;
-            return (
-              <div key={item.q} className={`ln-faq-item${isOpen ? ' open' : ''}`}>
-                <button type="button" className="ln-faq-q" aria-expanded={isOpen}
-                        onClick={() => setOpen(isOpen ? null : i)}>
-                  <span>{item.q}</span>
-                  <span className="ln-faq-icon" aria-hidden="true">{isOpen ? '−' : '+'}</span>
-                </button>
-                {isOpen && <div className="ln-faq-a">{item.a}</div>}
-              </div>
-            );
-          })}
-        </div>
+      <div className="ln-faq">
+        {FAQ_ITEMS.map((item, i) => {
+          const isOpen = open === i;
+          return (
+            <div key={item.q} className={`ln-faq-item${isOpen ? ' open' : ''}`}>
+              <button type="button" className="ln-faq-q" aria-expanded={isOpen}
+                      onClick={() => setOpen(isOpen ? null : i)}>
+                <span>{item.q}</span>
+                <span className="ln-faq-icon" aria-hidden="true">{isOpen ? '−' : '+'}</span>
+              </button>
+              {isOpen && <div className="ln-faq-a">{item.a}</div>}
+            </div>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-/* ── Footer ── */
-function Footer({ onEnterPlatform }: { onEnterPlatform: () => void }) {
-  return (
-    <footer className="ln-footer">
-      <div className="ln-container">
-        <div className="ln-footer-grid">
-          <div className="ln-footer-brand">
-            <img src="/brand/reboundx.svg" alt="ReboundX" width="120" height="18" />
-            <p className="ln-footer-tagline">Get back what you pay in trading fees.</p>
-          </div>
-          <div className="ln-footer-cols">
-            <div className="ln-footer-col">
-              <div className="ln-footer-col-title">Product</div>
-              <a href="#" onClick={(e) => { e.preventDefault(); onEnterPlatform(); }}>Exchanges</a>
-              <a href="#" onClick={(e) => e.preventDefault()}>Calculator</a>
-              <a href="#" onClick={(e) => e.preventDefault()}>Events</a>
-            </div>
-            <div className="ln-footer-col">
-              <div className="ln-footer-col-title">Resources</div>
-              <a href="#how" onClick={(e) => { e.preventDefault(); document.querySelector('#how')?.scrollIntoView({ behavior: 'smooth' }); }}>How it works</a>
-              <a href="#" onClick={(e) => e.preventDefault()}>Trust</a>
-              <a href="#" onClick={(e) => e.preventDefault()}>FAQ</a>
-            </div>
-            <div className="ln-footer-col">
-              <div className="ln-footer-col-title">Company</div>
-              <a href="#" onClick={(e) => e.preventDefault()}>About</a>
-              <a href="#" onClick={(e) => e.preventDefault()}>Contact</a>
-              <a href="#" onClick={(e) => e.preventDefault()}>Terms</a>
-            </div>
-          </div>
-        </div>
-        <div className="ln-footer-bottom">
-          <span>© 2025 ReboundX</span>
-          <span className="ln-footer-legal">Privacy · Terms · Cookies</span>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-/* ── Section 6.5: Rebate Stream ── */
+/* ── Section 8: Rebate Stream ── */
 const PATH_TRANSITION = { duration: 0, ease: 'linear' } as const;
 
 function GeminiSection({ onEnterPlatform }: { onEnterPlatform: () => void }) {
@@ -521,6 +584,47 @@ function GeminiSection({ onEnterPlatform }: { onEnterPlatform: () => void }) {
   );
 }
 
+/* ── Footer ── */
+function Footer({ onEnterPlatform }: { onEnterPlatform: () => void }) {
+  return (
+    <footer className="ln-footer">
+      <div className="ln-container">
+        <div className="ln-footer-grid">
+          <div className="ln-footer-brand">
+            <img src="/brand/reboundx.svg" alt="ReboundX" width="120" height="18" />
+            <p className="ln-footer-tagline">Get back what you pay in trading fees.</p>
+          </div>
+          <div className="ln-footer-cols">
+            <div className="ln-footer-col">
+              <div className="ln-footer-col-title">Product</div>
+              <a href="#" onClick={(e) => { e.preventDefault(); onEnterPlatform(); }}>Exchanges</a>
+              <a href="#" onClick={(e) => e.preventDefault()}>Calculator</a>
+              <a href="#" onClick={(e) => e.preventDefault()}>Events</a>
+            </div>
+            <div className="ln-footer-col">
+              <div className="ln-footer-col-title">Resources</div>
+              <a href="#how" onClick={(e) => { e.preventDefault(); document.querySelector('#how')?.scrollIntoView({ behavior: 'smooth' }); }}>How it works</a>
+              <a href="#" onClick={(e) => e.preventDefault()}>Trust</a>
+              <a href="#" onClick={(e) => e.preventDefault()}>FAQ</a>
+            </div>
+            <div className="ln-footer-col">
+              <div className="ln-footer-col-title">Company</div>
+              <a href="#" onClick={(e) => e.preventDefault()}>About</a>
+              <a href="#" onClick={(e) => e.preventDefault()}>Contact</a>
+              <a href="#" onClick={(e) => e.preventDefault()}>Terms</a>
+            </div>
+          </div>
+        </div>
+        <div className="ln-footer-bottom">
+          <span>© 2025 ReboundX</span>
+          <span className="ln-footer-legal">Privacy · Terms · Cookies</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+
 /* ── Main export ── */
 export default function LandingPage({ onEnterPlatform }: Props) {
   return (
@@ -533,8 +637,8 @@ export default function LandingPage({ onEnterPlatform }: Props) {
         <HowItWorks />
         <PartnersSection />
         <VerifySection />
-        <GeminiSection onEnterPlatform={onEnterPlatform} />
         <FAQ />
+        <GeminiSection onEnterPlatform={onEnterPlatform} />
       </main>
       <Footer onEnterPlatform={onEnterPlatform} />
     </>

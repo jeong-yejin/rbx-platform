@@ -1,4 +1,5 @@
 import { useEffect, type MouseEvent } from 'react';
+import { HoverButton } from '@/components/ui/hover-button';
 
 interface LandingNavProps {
   onEnterPlatform?: () => void;
@@ -69,12 +70,14 @@ export default function LandingNav({ onEnterPlatform, onHome }: LandingNavProps)
           </ul>
 
           {onEnterPlatform && (
-            <button type="button" className="ln-cta" onClick={onEnterPlatform}>
+            <HoverButton
+              type="button"
+              onClick={onEnterPlatform}
+              style={{ paddingLeft: '0.8rem', paddingRight: '0.8rem', paddingTop: '0.2rem', paddingBottom: '0.2rem' }}
+              className="rounded-full text-[0.85rem] font-semibold leading-[2rem]"
+            >
               Launch Platform
-              <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
+            </HoverButton>
           )}
 
           <button className="ln-mobile-menu-btn" aria-label="Open menu" onClick={() => {
