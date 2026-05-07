@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import LandingNav from '../components/LandingNav';
+
+interface MyPageProps { onHome?: () => void; }
 
 type Tab = 'overview' | 'history' | 'exchanges' | 'settings';
 
@@ -367,72 +370,75 @@ const TABS: { key: Tab; label: string; Icon: () => JSX.Element }[] = [
   { key: 'settings',  label: 'Settings',        Icon: IconSettings  },
 ];
 
-export default function MyPage() {
+export default function MyPage({ onHome }: MyPageProps = {}) {
   const [tab, setTab] = useState<Tab>('overview');
 
   return (
-    <div className="mp-shell">
-      {/* Sidebar */}
-      <aside className="mp-sidebar">
-        <div className="mp-sidebar-brand">
-          <img src="/brand/reboundx.svg" alt="ReboundX" width="120" height="18" style={{ display: 'block' }} />
-        </div>
-
-        <div className="mp-sidebar-profile">
-          <div className="mp-avatar">{USER.name[0]}</div>
-          <div className="mp-profile-info">
-            <div className="mp-profile-name">{USER.name}</div>
-            <div className="mp-profile-handle">{USER.handle}</div>
-          </div>
-        </div>
-
-        <nav className="mp-sidebar-nav" aria-label="Platform navigation">
-          {TABS.map(({ key, label, Icon }) => (
-            <button key={key} className={`mp-nav-item${tab === key ? ' active' : ''}`} onClick={() => setTab(key)}>
-              <Icon /><span>{label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="mp-sidebar-footer">
-          <div className="mp-sidebar-total-label">Total earned</div>
-          <div className="mp-sidebar-total">${fmt(USER.totalEarned)}</div>
-          <a href={`${LANDING}/`} className="mp-back-btn">
-            <IconBack /> Back to site
-          </a>
-        </div>
-      </aside>
-
-      {/* Main */}
-      <main className="mp-main">
-        {/* Mobile header */}
-        <div className="mp-mobile-header">
-          <a href={`${LANDING}/`} className="mp-back-mobile" aria-label="Back to site"><IconBack /></a>
-          <img src="/brand/reboundx.svg" alt="ReboundX" width="100" height="16" />
-          <div className="mp-mobile-avatar">{USER.name[0]}</div>
-        </div>
-
-        {/* Mobile tabs */}
-        <div className="mp-mobile-tabs" role="tablist">
-          {TABS.map(({ key, label, Icon }) => (
-            <button key={key} role="tab" aria-selected={tab === key} className={`mp-mobile-tab${tab === key ? ' active' : ''}`} onClick={() => setTab(key)}>
-              <Icon /><span>{label}</span>
-            </button>
-          ))}
-        </div>
-
-        <div className="mp-content-area">
-          <div className="mp-content-header">
-            <h1 className="mp-content-title">{TABS.find((t) => t.key === tab)?.label}</h1>
-            {tab === 'overview' && <div className="mp-welcome">Welcome back, {USER.name.split(' ')[0]}</div>}
+    <>
+      <LandingNav onHome={onHome} />
+      <div className="mp-shell">
+        {/* Sidebar */}
+        <aside className="mp-sidebar">
+          <div className="mp-sidebar-brand">
+            <img src="/brand/reboundx.svg" alt="ReboundX" width="120" height="18" style={{ display: 'block' }} />
           </div>
 
-          {tab === 'overview'  && <OverviewTab onNav={setTab} />}
-          {tab === 'history'   && <HistoryTab />}
-          {tab === 'exchanges' && <ExchangesTab />}
-          {tab === 'settings'  && <SettingsTab />}
-        </div>
-      </main>
-    </div>
+          <div className="mp-sidebar-profile">
+            <div className="mp-avatar">{USER.name[0]}</div>
+            <div className="mp-profile-info">
+              <div className="mp-profile-name">{USER.name}</div>
+              <div className="mp-profile-handle">{USER.handle}</div>
+            </div>
+          </div>
+
+          <nav className="mp-sidebar-nav" aria-label="Platform navigation">
+            {TABS.map(({ key, label, Icon }) => (
+              <button key={key} className={`mp-nav-item${tab === key ? ' active' : ''}`} onClick={() => setTab(key)}>
+                <Icon /><span>{label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="mp-sidebar-footer">
+            <div className="mp-sidebar-total-label">Total earned</div>
+            <div className="mp-sidebar-total">${fmt(USER.totalEarned)}</div>
+            <a href={`${LANDING}/`} className="mp-back-btn">
+              <IconBack /> Back to site
+            </a>
+          </div>
+        </aside>
+
+        {/* Main */}
+        <main className="mp-main">
+          {/* Mobile header */}
+          <div className="mp-mobile-header">
+            <a href={`${LANDING}/`} className="mp-back-mobile" aria-label="Back to site"><IconBack /></a>
+            <img src="/brand/reboundx.svg" alt="ReboundX" width="100" height="16" />
+            <div className="mp-mobile-avatar">{USER.name[0]}</div>
+          </div>
+
+          {/* Mobile tabs */}
+          <div className="mp-mobile-tabs" role="tablist">
+            {TABS.map(({ key, label, Icon }) => (
+              <button key={key} role="tab" aria-selected={tab === key} className={`mp-mobile-tab${tab === key ? ' active' : ''}`} onClick={() => setTab(key)}>
+                <Icon /><span>{label}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="mp-content-area">
+            <div className="mp-content-header">
+              <h1 className="mp-content-title">{TABS.find((t) => t.key === tab)?.label}</h1>
+              {tab === 'overview' && <div className="mp-welcome">Welcome back, {USER.name.split(' ')[0]}</div>}
+            </div>
+
+            {tab === 'overview'  && <OverviewTab onNav={setTab} />}
+            {tab === 'history'   && <HistoryTab />}
+            {tab === 'exchanges' && <ExchangesTab />}
+            {tab === 'settings'  && <SettingsTab />}
+          </div>
+        </main>
+      </div>
+    </>
   );
 }
