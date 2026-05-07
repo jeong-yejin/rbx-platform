@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# env files — never commit secrets
+.env
+.env.*
+!.env.example
+
+# build output
+dist/
+dist-ssr/
+build/
+
+# vite cache
+*.local
+.vite/
+
+# claude code internal data (worktrees, conversation history)
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+*.swp
+*.swo
