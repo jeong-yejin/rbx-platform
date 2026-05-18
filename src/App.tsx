@@ -1,35 +1,77 @@
-import { useEffect, useState } from 'react';
-import LandingPage from './pages/LandingPage';
-import MyPage from './pages/MyPage';
+import { useState } from "react";
+import { Header } from "./components/layout/Header";
+import { Footer } from "./components/layout/Footer";
+import { LandingView } from "./views/LandingView";
+import { OnboardingShell } from "./components/flow/OnboardingShell";
+import { Dashboard } from "./components/dashboard/Dashboard";
+import type { Exchange } from "./data/exchanges";
 
-type Route = 'landing' | 'app';
-const routeFor = (pathname: string): Route =>
-  pathname.startsWith('/app') ? 'app' : 'landing';
+export type View = "landing" | "onboarding" | "dashboard";
+
+type FinishedData = {
+  exchange: Exchange;
+  uid: string;
+  address: string;
+  network: string;
+};
+
+type DocumentWithViewTransition = Document & {
+  startViewTransition: (cb: () => void) => void;
+};
+
+function runTransition(cb: () => void): void {
+  if (typeof document === "undefined") {
+    cb();
+    return;
+  }
+  if ("startViewTransition" in document) {
+    (document as DocumentWithViewTransition).startViewTransition(cb);
+  } else {
+    cb();
+  }
+}
 
 export default function App() {
-  const [route, setRoute] = useState<Route>(() => routeFor(window.location.pathname));
+  const [view, setView] = useState<View>("landing");
+  const [finished, setFinished] = useState<FinishedData | null>(null);
 
-  useEffect(() => {
-    const onPop = () => setRoute(routeFor(window.location.pathname));
-    window.addEventListener('popstate', onPop);
-    return () => window.removeEventListener('popstate', onPop);
-  }, []);
-
-  const enterPlatform = () => {
-    if (window.location.pathname !== '/app') {
-      window.history.pushState({}, '', '/app');
-    }
-    setRoute('app');
-    window.scrollTo({ top: 0 });
+  const navigate = (next: View) => {
+    runTransition(() => setView(next));
+    if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   };
 
-  const goHome = () => {
-    if (window.location.pathname !== '/') {
-      window.history.pushState({}, '', '/');
-    }
-    setRoute('landing');
-    window.scrollTo({ top: 0 });
-  };
-
-  return route === 'app' ? <MyPage onHome={goHome} /> : <LandingPage onEnterPlatform={enterPlatform} />;
+  return (
+    <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--ink)]">
+      <Header view={view} onNavigate={navigate} />
+      <div className="flex-1">
+        {view === "landing" && (
+          <LandingView onStart={() => navigate("onboarding")} />
+        )}
+        {view === "onboarding" && (
+          <OnboardingShell
+            onFinished={(data) => {
+              setFinished(data);
+              navigate("dashboard");
+            }}
+            onExit={() => navigate("landing")}
+          />
+        )}
+        {view === "dashboard" && (
+          <Dashboard
+            data={
+              finished
+                ? {
+                    exchangeName: finished.exchange.name,
+                    uid: finished.uid,
+                    address: finished.address,
+                    network: finished.network,
+                  }
+                : null
+            }
+          />
+        )}
+      </div>
+      <Footer />
+    </div>
+  );
 }
