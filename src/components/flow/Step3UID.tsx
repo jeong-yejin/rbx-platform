@@ -11,6 +11,10 @@ type Props = {
 
 type VerifyState = "idle" | "verifying" | "ok" | "failed";
 
+const VERIFY_DELAY_MS = 1400;
+const MATCH_HOLD_MS = 480;
+const UID_MAX_DIGITS = 16;
+
 export function Step3UID({ exchange, onComplete }: Props) {
   const [uid, setUid] = useState("");
   const [state, setState] = useState<VerifyState>("idle");
@@ -34,7 +38,7 @@ export function Step3UID({ exchange, onComplete }: Props) {
           setClipboardSuggestion(digits);
         }
       } catch {
-        // permission denied — silent, manual paste still works
+        // clipboard permission denied is expected; user can still paste manually
       }
     };
     tryClipboard();
@@ -51,8 +55,8 @@ export function Step3UID({ exchange, onComplete }: Props) {
     setState("verifying");
     setTimeout(() => {
       setState("ok");
-      setTimeout(() => onComplete(uid), 480);
-    }, 1400);
+      setTimeout(() => onComplete(uid), MATCH_HOLD_MS);
+    }, VERIFY_DELAY_MS);
   };
 
   if (!exchange) {
@@ -82,7 +86,7 @@ export function Step3UID({ exchange, onComplete }: Props) {
             mono
             value={uid}
             onChange={(e) =>
-              setUid(e.target.value.replace(/[^0-9]/g, "").slice(0, 16))
+              setUid(e.target.value.replace(/[^0-9]/g, "").slice(0, UID_MAX_DIGITS))
             }
             inputMode="numeric"
             pattern="[0-9]*"

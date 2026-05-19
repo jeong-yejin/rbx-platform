@@ -22,6 +22,9 @@ const PATTERNS: Record<Network, RegExp> = {
   SOL: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
 };
 
+const WALLETCONNECT_DEMO_ADDRESS = "Tab9k1xQ7nFxhA92pLm0VeRb3kS5xJqYz";
+const WALLETCONNECT_DEMO_NETWORK: Network = "TRC20";
+
 export function Step4Wallet({ onComplete }: Props) {
   const [network, setNetwork] = useState<Network>("TRC20");
   const [address, setAddress] = useState("");
@@ -107,7 +110,10 @@ export function Step4Wallet({ onComplete }: Props) {
         >
           Finish setup
         </Button>
-        <Button variant="link" onClick={() => onComplete("Tab9k1xQ7nFxhA92pLm0VeRb3kS5xJqYz", "TRC20")}>
+        <Button
+          variant="link"
+          onClick={() => onComplete(WALLETCONNECT_DEMO_ADDRESS, WALLETCONNECT_DEMO_NETWORK)}
+        >
           Connect via WalletConnect
         </Button>
       </div>

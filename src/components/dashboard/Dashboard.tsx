@@ -28,12 +28,27 @@ const HISTORY: Payout[] = [
   { date: "2026-04-21", amount: 64.55, network: "ERC20", txid: "0xQ2…ab18", volume: 84_900 },
 ];
 
+const SECONDS_PER_DAY = 86_400;
+const SECONDS_PER_HOUR = 3_600;
+const SECONDS_PER_MINUTE = 60;
+const NEXT_PAYOUT_SECONDS =
+  2 * SECONDS_PER_DAY + 4 * SECONDS_PER_HOUR + 12 * SECONDS_PER_MINUTE;
+
+const PENDING_THIS_MONTH_USD = 237.42;
+const LIFETIME_RETURNED_USD = 4_820;
+const LIFETIME_PAYOUT_COUNT = 14;
+const FALLBACK_EXCHANGE = "Binance";
+const FALLBACK_NETWORK = "TRC20";
+const FALLBACK_UID = "1029…4756";
+const FALLBACK_ADDRESS = "Tab9k…2nFx";
+const ADDRESS_TRUNC_HEAD = 4;
+const ADDRESS_TRUNC_TAIL = 4;
+
 export function Dashboard({ data }: Props) {
-  const next = data ? "2d 4h 12m" : fmtCountdown(2 * 86400 + 4 * 3600 + 12 * 60);
-  const pending = 237.42;
-  const lifetime = 4820;
-  const lifetimePayouts = 14;
-  const truncatedAddr = data ? truncAddress(data.address, 4, 4) : "Tab9k…2nFx";
+  const nextPayout = fmtCountdown(NEXT_PAYOUT_SECONDS);
+  const truncatedAddr = data
+    ? truncAddress(data.address, ADDRESS_TRUNC_HEAD, ADDRESS_TRUNC_TAIL)
+    : FALLBACK_ADDRESS;
 
   return (
     <section className="container pt-[var(--s-12)] pb-[var(--s-24)]">
@@ -59,19 +74,19 @@ export function Dashboard({ data }: Props) {
         <div className="flex flex-col gap-[var(--s-2)]">
           <p className="t-micro text-[var(--ink-muted)]">This month · pending</p>
           <NumberDisplay
-            value={pending}
+            value={PENDING_THIS_MONTH_USD}
             format="money-cents"
             className="t-display"
           />
           <p className="t-small text-[var(--ink-muted)] mono">
-            Across 4 trading sessions on {data?.exchangeName ?? "Binance"}
+            Across 4 trading sessions on {data?.exchangeName ?? FALLBACK_EXCHANGE}
           </p>
         </div>
         <div className="flex flex-col gap-[var(--s-2)]">
           <p className="t-micro text-[var(--ink-muted)]">Next payout</p>
-          <p className="t-display mono leading-none">{next}</p>
+          <p className="t-display mono leading-none">{nextPayout}</p>
           <p className="t-small text-[var(--ink-muted)] mono">
-            To {data?.network ?? "TRC20"} {truncatedAddr}
+            To {data?.network ?? FALLBACK_NETWORK} {truncatedAddr}
           </p>
         </div>
       </div>
@@ -84,19 +99,19 @@ export function Dashboard({ data }: Props) {
             Lifetime returned
           </p>
           <p className="t-h1 mono">
-            <NumberDisplay value={lifetime} format="money" />
+            <NumberDisplay value={LIFETIME_RETURNED_USD} format="money" />
           </p>
           <p className="t-small text-[var(--ink-muted)] mt-[var(--s-1)]">
-            Across {lifetimePayouts} payouts
+            Across {LIFETIME_PAYOUT_COUNT} payouts
           </p>
         </div>
         <div>
           <p className="t-micro text-[var(--ink-muted)] mb-[var(--s-2)]">
             Linked exchange
           </p>
-          <p className="t-h1">{data?.exchangeName ?? "Binance"}</p>
+          <p className="t-h1">{data?.exchangeName ?? FALLBACK_EXCHANGE}</p>
           <p className="t-small text-[var(--ink-muted)] mt-[var(--s-1)] mono">
-            UID {data?.uid ?? "1029…4756"} · verified
+            UID {data?.uid ?? FALLBACK_UID} · verified
           </p>
         </div>
         <div>
